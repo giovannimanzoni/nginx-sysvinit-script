@@ -19,7 +19,7 @@ For my use, my version of this repo search for Nginx web server named nginxfront
 
 You can use it via the `service` command or by directly invoking the shell script in `/etc/init.d`; what you like best.
 Your shell will have auto-completion for the various keywords that are available, for instance if you type `service
-nginx res` just hit tab for auto-completion.
+nginxfront res` just hit tab for auto-completion.
 
 ```shell
 service nginxfront reload
