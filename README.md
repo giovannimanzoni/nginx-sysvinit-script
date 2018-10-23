@@ -1,28 +1,34 @@
 # nginx SysVinit script
 [Linux Standard Base (LSB)](http://www.linuxfoundation.org/collaborate/workgroups/lsb) compliant [SysVinit]
 (http://freecode.com/projects/sysvinit) script for [nginx](http://nginx.org/).
+Many thanks to https://gist.github.com/SobanVuex/6208623 for implement service nginx upgrade . I use this repo for take the upgrade code.
+
+
 
 ## Install
 ```shell
-git clone https://github.com/Fleshgrinder/nginx-sysvinit-script.git
+git clone https://github.com/giovannimanzoni/nginx-sysvinit-script.git
 cd nginx-sysvinit-script
 make
 #make uninstall
+adduser --system --no-create-home --disabled-login --group --disabled-password nginxfront
 ```
 
 ## Usage
+For my use, my version of this repo search for Nginx web server named nginxfront. You can rename nginxfront occurences in nginx for standard use.
+
 You can use it via the `service` command or by directly invoking the shell script in `/etc/init.d`; what you like best.
 Your shell will have auto-completion for the various keywords that are available, for instance if you type `service
 nginx res` just hit tab for auto-completion.
 
 ```shell
-service nginx force-reload
-service nginx reload
-service nginx restart
-service nginx try-restart
-service nginx start
-service nginx status
-service nginx stop
+service nginxfront reload
+service nginxfront restart
+service nginxfront try-restart
+service nginxfront start
+service nginxfront status
+service nginxfront stop
+service nginxfront upgrade
 ```
 
 ## Weblinks

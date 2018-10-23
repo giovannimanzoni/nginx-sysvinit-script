@@ -3,7 +3,7 @@
 SHELL = /bin/sh
 .SUFFIXES:
 
-DAEMON  := nginx
+DAEMON  := nginxfront
 INIT    := /etc/init.d/$(DAEMON)
 DEFAULT := /etc/default/$(DAEMON)
 

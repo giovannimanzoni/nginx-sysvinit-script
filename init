@@ -1,13 +1,13 @@
 #!/bin/sh
 
 ### BEGIN INIT INFO
-# Provides:           nginx
+# Provides:           nginxfront
 # Required-Start:     $local_fs $remote_fs $network $syslog $named
 # Required-Stop:      $local_fs $remote_fs $network $syslog $named
 # Default-Start:      2 3 4 5
 # Default-Stop:       0 1 6
-# Short-Description:  nginx LSB init script
-# Description:        nginx Linux Standards Base compliant init script.
+# Short-Description:  nginxfront LSB init script
+# Description:        nginxfront Linux Standards Base compliant init script.
 ### END INIT INFO
 
 
@@ -17,13 +17,15 @@
 
 
 # The name of the daemon.
-readonly NAME=nginx
+readonly NAME=nginxfront
+
+readonly DESCRIPTION="Nginx Web Server Frontend"
 
 # Arguments that should be passed to the executable.
 DAEMON_ARGS=
 
 # The path in which to search for the daemon.
-readonly PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+readonly PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/srv/front/usr/local/nginx/sbin/
 
 # Absolute path to the PID file.
 PIDFILE=$(printf -- '%s/run/%s.pid' "$([ -d /run ] || printf -- /var)" "${NAME}")
@@ -50,6 +52,39 @@ readonly EC_STOP_FAILED=154
 # ----------------------------------------------------------------------------------------------------------------------
 #                                                                                                              Functions
 # ----------------------------------------------------------------------------------------------------------------------
+
+pidchange() {
+  local pidfile try=0 tries=3
+
+  if [ ! -z $2 ]; then
+    pidfile=$2
+  else
+    pidfile=$PIDFILE
+  fi
+
+  while [ $try -lt $tries ]; do
+    case "$1" in
+      'create')
+        if [ -f $pidfile ]; then
+	  #return ok
+          return 0
+        fi
+        ;;
+      'remove')
+        if [ ! -f $pidfile ]; then
+          #return ok
+	  return 0
+        fi
+        ;;
+    esac
+    try=`expr $try + 1`
+    sleep 1
+  done
+
+  #error
+  return 3
+}
+
 
 
 # Exit the script with an error code.
@@ -93,7 +128,7 @@ warn()
 # Print usage string.
 usage()
 {
-	printf 'Usage: %s {start|stop|restart|try-restart|reload|force-reload|status}\n' "$0"
+	printf 'Usage: %s {start|stop|restart|try-restart|reload|status|upgrade}\n' "$0"
 }
 
 ###
@@ -226,9 +261,10 @@ readonly STATUS=$?
 case "$1" in
 
 	# Reload the configuration, if the service is running, otherwise do nothing.
-	force-reload|reload)
+	reload)
 		if [ ${STATUS} -eq 0 ]
 		then
+			log_daemon_msg "Reload $DESCRIPTION"
 			info 'reloading configuration ...'
 			reload_service || die ${EC_RELOADING_FAILED}
 		else
@@ -238,6 +274,7 @@ case "$1" in
 
 	# Restart the service, if the service is already running, otherwise start the service.
 	restart)
+		log_daemon_msg "Restart $DESCRIPTION"
 		if [ ${STATUS} -eq 0 ]
 		then
 			info 'restarting service ...'
@@ -253,6 +290,7 @@ case "$1" in
 		then
 			ok 'already started.'
 		else
+			log_daemon_msg "Start $DESCRIPTION"
 			info 'starting ...'
 			start_service || die ${EC_START_FAILED}
 		fi
@@ -274,6 +312,7 @@ case "$1" in
 	stop)
 		if [ ${STATUS} -eq 0 ]
 		then
+			log_daemon_msg "Stop $DESCRIPTION"
 			info 'stopping ...'
 			stop_service || die ${EC_STOP_FAILED}
 		else
@@ -286,6 +325,7 @@ case "$1" in
 		check_privileges
 		if [ ${STATUS} -eq 0 ]
 		then
+			log_daemon_msg "Try restart $DESCRIPTION"
 			info 'restarting service ...'
 			stop_service || die ${EC_RESTART_STOP_FAILED}
 			sleep 0.1
@@ -295,15 +335,49 @@ case "$1" in
 		fi
 	;;
 
+	upgrade)
+		check_privileges
+		log_daemon_msg "Upgrade $DESCRIPTION..."
+		info 'Upgrade'
+
+		#echo "OLD PID: "
+		#echo `cat $PIDFILE`
+
+		kill -USR2 `cat $PIDFILE`
+		pidchange 'create' $PIDFILE.oldbin
+		NEWSTATUS=$?
+		kill -WINCH `cat $PIDFILE.oldbin`
+
+		if [ ${NEWSTATUS} -eq 0 ]
+                then
+			kill -QUIT `cat $PIDFILE.oldbin`
+		 	pidchange 'remove' $PIDFILE.oldbin
+			log_daemon_msg "Upgrade $DESCRIPTION OK"
+                else
+			kill -HUP `cat $PIDFILE`
+			kill -TERM `cat $PIDFILE.oldbin`
+			kill -QUIT `cat $PIDFILE.oldbin`
+
+			pidchange 'remove' $PIDFILE.oldbin
+			log_daemon_msg "Upgrade $DESCRIPTION FAIL"
+                fi
+
+		#echo "NEW PID: "
+		#echo `cat $PIDFILE`
+	;;
+
 	-h|--help)
 		usage
 	;;
+
 
 	*)
 		fail "action '${ACTION}' not recognized."
 		usage 1>&2
 		exit ${EC_INVALID_ARGUMENT}
 	;;
+
+
 
 esac
 
