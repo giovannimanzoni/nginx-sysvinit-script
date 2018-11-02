@@ -1,4 +1,4 @@
-# nginx SysVinit script
+# Nginx SysVinit script
 [Linux Standard Base (LSB)](http://www.linuxfoundation.org/collaborate/workgroups/lsb) compliant [SysVinit]
 (http://freecode.com/projects/sysvinit) script for [nginx](http://nginx.org/).
 Many thanks to https://gist.github.com/SobanVuex/6208623 for implement service nginx upgrade . I use this repo for take the upgrade code.
