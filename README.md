@@ -3,6 +3,7 @@
 (http://freecode.com/projects/sysvinit) script for [nginx](http://nginx.org/).
 Many thanks to https://gist.github.com/SobanVuex/6208623 for implement service nginx upgrade . I use this repo for take the upgrade code.
 
+You need SysVinit. If you have Systemd, remove it. For example this is a how to for Debian Stretch: http://without-systemd.org/wiki/index.php/How_to_remove_systemd_from_a_Debian_Stretch_installation
 
 
 ## Install
