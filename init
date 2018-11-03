@@ -340,8 +340,9 @@ case "$1" in
 		log_daemon_msg "Upgrade $DESCRIPTION..."
 		info 'Upgrade'
 
-		#echo "OLD PID: "
-		#echo `cat $PIDFILE`
+		echo
+		echo -n "OLD PID: "
+		echo `cat $PIDFILE`
 
 		kill -USR2 `cat $PIDFILE`
 		pidchange 'create' $PIDFILE.oldbin
@@ -362,8 +363,9 @@ case "$1" in
 			log_daemon_msg "Upgrade $DESCRIPTION FAIL"
                 fi
 
-		#echo "NEW PID: "
-		#echo `cat $PIDFILE`
+		echo
+		echo -n "NEW PID: "
+		echo `cat $PIDFILE`
 	;;
 
 	-h|--help)
