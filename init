@@ -128,7 +128,7 @@ warn()
 # Print usage string.
 usage()
 {
-	printf 'Usage: %s {start|stop|restart|try-restart|reload|status|upgrade}\n' "$0"
+	printf 'Usage: %s {start|stop|restart|try-restart|reload|status|upgrade|version}\n' "$0"
 }
 
 ###
@@ -259,6 +259,9 @@ readonly STATUS=$?
 
 
 case "$1" in
+	version)
+		$NAME -V
+	;;
 
 	# Reload the configuration, if the service is running, otherwise do nothing.
 	reload)

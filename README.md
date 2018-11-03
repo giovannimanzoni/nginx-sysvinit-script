@@ -30,6 +30,7 @@ service nginxfront start
 service nginxfront status
 service nginxfront stop
 service nginxfront upgrade
+service nginxfront version
 ```
 
 ## Weblinks
