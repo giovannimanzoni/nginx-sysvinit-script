@@ -31,6 +31,7 @@ service nginxfront status
 service nginxfront stop
 service nginxfront upgrade
 service nginxfront version
+service nginxfront configtest
 ```
 
 ## Weblinks
