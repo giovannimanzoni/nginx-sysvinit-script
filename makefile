@@ -3,15 +3,29 @@
 SHELL = /bin/sh
 .SUFFIXES:
 
-DAEMON  := nginxfront
-INIT    := /etc/init.d/$(DAEMON)
-DEFAULT := /etc/default/$(DAEMON)
+DAEMONFRONT  := nginxfront
+INITFRONT    := /etc/init.d/$(DAEMONFRONT)
+DEFAULTFRONT := /etc/default/$(DAEMONFRONT)
 
-install:
-	install -D --mode=0644 --owner=root --group=root -- ./defaults $(DEFAULT)
-	install -D --mode=0755 --owner=root --group=root -- ./init $(INIT)
-	update-rc.d $(DAEMON) defaults
+DAEMONBACK  := nginxback
+INITBACK    := /etc/init.d/$(DAEMONBACK)
+DEFAULTBACK := /etc/default/$(DAEMONBACK)
 
-uninstall:
-	update-rc.d -f $(DAEMON) remove
-	rm --force -- $(INIT) $(DEFAULT)
+
+installfront:
+	install -D --mode=0644 --owner=root --group=root -- ./defaultsfront $(DEFAULTFRONT)
+	install -D --mode=0755 --owner=root --group=root -- ./initfront $(INITFRONT)
+	update-rc.d $(DAEMONFRONT) defaults
+
+uninstallfront:
+	update-rc.d -f $(DAEMONFRONT) remove
+	rm --force -- $(INITFRONT) $(DEFAULTFRONT)
+
+installback:
+	install -D --mode=0644 --owner=root --group=root -- ./defaultsback $(DEFAULTBACK)
+	install -D --mode=0755 --owner=root --group=root -- ./initback $(INITBACK)
+	update-rc.d $(DAEMONBACK) defaults
+
+uninstallback:
+	update-rc.d -f $(DAEMONBACK) remove
+	rm --force -- $(INITBACK) $(DEFAULTBACK)
