@@ -18,6 +18,8 @@ make installback
 #make uninstallback
 adduser --system --no-create-home --disabled-login --group --disabled-password nginxfront
 adduser --system --no-create-home --disabled-login --group --disabled-password nginxback
+usermod -a -G www-data nginxfront
+usermod -a -G www-data nginxback
 ```
 
 ## Usage
